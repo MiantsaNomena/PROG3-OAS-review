@@ -1,0 +1,111 @@
+openapi: 3.0.3
+info:
+  title: TD OpenAPI Specification - Ingredients
+  version: 1.0.0
+servers:
+  - url: 'http://localhost:8000'
+tags:
+  - name: Ingredients
+
+paths:
+  /ingredients/{id}:
+    get:
+      tags:
+        - Ingredients
+      parameters:
+        - $ref: '#/components/parameters/IngredientIdPathParameter'
+      responses:
+        200:
+          description: Ingredient trouvé
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Ingredient'
+        404:
+          description: Ingredient non trouvé
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "Ingredient.id={id} is not found"
+  /ingredients/{id}/stock:
+    get:
+      tags:
+        - Ingredients
+      parameters:
+        - $ref: '#/components/parameters/IngredientIdPathParameter'
+        - $ref: '#/components/parameters/AtQueryParameter'
+        - $ref: '#/components/parameters/UnitQueryParameter'
+      responses:
+        200:
+          description: Valeur du stock
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Stock'
+        400:
+          description: Paramètres invalides
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "Either mandatory query parameter `at` or `unit` is not provided"
+        404:
+          description: Ingredient non trouvé
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "Ingredient.id={id} is not found"              
+components:
+  parameters:
+    IngredientIdPathParameter:
+      in: path
+      name: id
+      description: Identifiant de l'ingrédient
+      required: true
+      schema:
+        type: integer
+    AtQueryParameter:
+      in: query
+      name: at
+      description: Moment temporel
+      required: true
+      schema:
+        type: string
+        format: date-time
+    UnitQueryParameter:
+      in: query
+      name: unit
+      description: Unité du stock
+      required: true
+      schema:
+        type: string
+        enum:
+          - PCS
+          - KG
+          - L
+  schemas:
+    Ingredient:
+      type: object
+      properties:
+        id:
+          type: integer
+        nom:
+          type: string
+        categorie:
+          type: string
+        prix:
+          type: number
+          format: float
+    Stock:
+      type: object
+      properties:
+        unit:
+          type: string
+          enum:
+            - PCS
+            - KG
+            - L
+        value:
+          type: number
