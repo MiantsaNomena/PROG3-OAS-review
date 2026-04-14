@@ -8,6 +8,19 @@ tags:
   - name: Ingredients
 
 paths:
+  /ingredients:
+    get:
+      tags:
+        - Ingredients
+      responses:
+        200:
+          description: Liste des ingrédients
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Ingredient'
   /ingredients/{id}:
     get:
       tags:
